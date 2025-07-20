@@ -1,11 +1,15 @@
 package com.lloyds.rm.controller;
 
 import com.lloyds.rm.entity.Application;
+import com.lloyds.rm.entity.ResumeApplication;
 import com.lloyds.rm.model.Constants;
 import com.lloyds.rm.model.NotificationType;
 import com.lloyds.rm.service.ApplicationService;
 import com.lloyds.rm.service.notification.NotificationService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.Map;
 
@@ -41,14 +45,38 @@ public class ApplicationController {
     }
 
     @PutMapping
-    public Application saveAndContinue(@RequestBody Application app, @RequestHeader Map<String, String> headers) throws Exception {
+    public Application saveAndContinue(@RequestBody Application app, @RequestHeader Map<String, String> headers, @RequestParam("file") MultipartFile multipartFile) throws Exception {
         String sessionStatus = headers.get(Constants.SESSION_STATUS);
         if (sessionStatus == null || !sessionStatus.equals(Constants.IN_PROGRESS)) {
             notificationServices.get(NotificationType.MAIL.getServiceName()).sendNotification(app.getAppid(), app.getEmail());
            // notificationServices.get(NotificationType.SMS.getServiceName()).sendNotification(app.getAppid(), app.getMobilenumber());
-            return app;
+            if (sessionStatus.equals(Constants.TERMINATED)){
+                return app;
+            }
         }
         return service.updateApplication(app.getAppid(), app);
+    }
+
+    @PostMapping("/submit-application")
+    public ResponseEntity<String> submitApplication(@RequestBody Application app) {
+        service.updateApplication(app.getAppid(), app);
+        return ResponseEntity.ok("Application submitted successfully with ID: " + app.getAppid());
+    }
+
+    /*public ResumeApplication resumeJourney(@RequestParam String token) {
+        Application app = service.getApplication(Long.parseLong(applicationId));
+        if (app == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(app);
+    }*/
+
+    @PostMapping(value = "/{applicationId}/upload", consumes = "multipart/form-data")
+    public ResponseEntity<String> uploadDocuments(@RequestParam("file") MultipartFile file, @RequestParam("applicationId") String applicationId) {
+        // Logic to handle file upload
+        // For example, save the file to a storage service or database
+        // Here we just return a success message for demonstration purposes
+        return ResponseEntity.ok("File uploaded successfully for application ID: " + applicationId);
     }
 
     @PutMapping("/{applicationId}/assign")

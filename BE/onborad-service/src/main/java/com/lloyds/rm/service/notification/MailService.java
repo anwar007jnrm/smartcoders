@@ -38,11 +38,11 @@ public class MailService implements NotificationService {
     public void sendNotification(String applicationId, String email) throws Exception {
         // Logic to send mail notification
 
-        String resumeLink = "https://example.com/resume?token=" + encryptParam(applicationId);
+        String resumeLink = "http://localhost:3000/resumeJourney?token=" + encryptParam(applicationId);
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("Resume Journey" + applicationId);
+        message.setSubject("Resume Journey " + applicationId);
         message.setText("Please resume your journey for applicationId: " + applicationId+
                         ". Click here to resume: " + resumeLink);
         mailSender.send(message);

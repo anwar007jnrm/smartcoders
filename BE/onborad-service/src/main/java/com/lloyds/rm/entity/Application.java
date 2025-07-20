@@ -47,12 +47,7 @@ public class Application {
     @PrePersist
     protected void onCreate() {
         this.createddate = LocalDateTime.now();
-        this.appid = this.journeytype + System.currentTimeMillis();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updateddate = LocalDateTime.now();
+        this.appid = this.journeytype +"-"+ System.currentTimeMillis()/1000;
     }
 
     public enum Status {
