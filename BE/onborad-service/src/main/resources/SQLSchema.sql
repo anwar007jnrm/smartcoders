@@ -28,7 +28,7 @@ CREATE TABLE applications (
   formdata LONGTEXT,
   currentpage INT,
   createddate DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updateddate DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updateddate DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Table: applicationdocuments

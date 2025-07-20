@@ -2,7 +2,8 @@ import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClipboardList, faCommentDots } from '@fortawesome/free-solid-svg-icons'; // added
+import { faClipboardList, faCommentDots } from '@fortawesome/free-solid-svg-icons';
+import './Dashboard.css';
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -51,6 +52,15 @@ function Dashboard() {
     } catch (err) {
       console.error('Assign failed', err);
     }
+  };
+
+  const getStatusColorClass = (updatedDate: string): 'green' | 'amber' | 'red' => {
+    const updated = new Date(updatedDate);
+    const now = new Date();
+    const diffInDays = Math.floor((now.getTime() - updated.getTime()) / (1000 * 60 * 60 * 24));
+    if (diffInDays <= 1) return 'green';
+    if (diffInDays <= 3) return 'amber';
+    return 'red';
   };
 
   const filtered = useMemo(() => {
@@ -106,34 +116,50 @@ function Dashboard() {
             {filtered.map(app => (
               <tr key={app.id}>
                 <td>
-                  {app.appid}
-                  {app.rmid === rmId && (
-                    <>
-                      <button
-                        onClick={() => navigate(`/application/${app.id}`)}
-                        title="Add audit to application"
-                        style={iconStyle}
-                      >
-                        <FontAwesomeIcon icon={faClipboardList} />
-                      </button>
-                      <button
-                        onClick={() => navigate(`/feedback/${app.id}`,{
-                          state: { appid: app.appid }
-                        })}
-                        title="View customer feedback"
-                        style={iconStyle}
-                      >
-                        <FontAwesomeIcon icon={faCommentDots} />
-                      </button>
-                    </>
-                  )}
+                  <div className="icon-cell">
+                    <span className="app-id-text">{app.appid}</span>
+                    {app.rmid === rmId && (
+                      <div className="icon-actions">
+                        <button
+                          onClick={() => navigate(`/application/${app.id}`)}
+                          title="Add audit to application"
+                          aria-label={`Add audit for ${app.appid}`}
+                          className="icon-button"
+                        >
+                          <FontAwesomeIcon icon={faClipboardList} />
+                        </button>
+                        <button
+                          onClick={() => navigate(`/feedback/${app.id}`, { state: { appid: app.appid } })}
+                          title="View customer feedback"
+                          aria-label={`View feedback for ${app.appid}`}
+                          className="icon-button"
+                        >
+                          <FontAwesomeIcon icon={faCommentDots} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </td>
                 <td>{app.firstname}</td>
                 <td>{app.lastname}</td>
                 <td>{app.email}</td>
                 <td>{app.mobilenumber}</td>
                 <td>{app.journeytype}</td>
-                <td><span className={`status ${app.status}`}></span></td>
+                <td>
+                  <span
+                    className={`status-dot ${getStatusColorClass(app.updateddate)}`}
+                    title={`Last updated ${new Date(app.updateddate).toLocaleString()}`}
+                    aria-label={`Status for ${app.appid}`}
+                  >
+                    <span className="sr-only">
+                      {
+                        getStatusColorClass(app.updateddate) === 'green' ? 'Updated within 1 day' :
+                        getStatusColorClass(app.updateddate) === 'amber' ? 'Updated within 1–3 days' :
+                        'Updated over 3 days ago'
+                      }
+                    </span>
+                  </span>
+                </td>
                 <td>
                   {app.rmid === rmId ? (
                     <span>{app.rmid}</span>
@@ -161,15 +187,6 @@ const searchBoxStyle: React.CSSProperties = {
   border: '1px solid #ccc',
   borderRadius: '4px',
   fontSize: '12px'
-};
-
-const iconStyle: React.CSSProperties = {
-  background: 'transparent',
-  border: 'none',
-  fontSize: '16px',
-  cursor: 'pointer',
-  color: '#0057b8',
-  marginLeft: '6px'
 };
 
 const assignBtnStyle: React.CSSProperties = {
