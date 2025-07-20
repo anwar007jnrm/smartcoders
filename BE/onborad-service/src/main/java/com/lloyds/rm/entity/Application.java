@@ -44,6 +44,17 @@ public class Application {
 
     private LocalDateTime updateddate = LocalDateTime.now();
 
+    @PrePersist
+    protected void onCreate() {
+        this.createddate = LocalDateTime.now();
+        this.appid = this.journeytype + System.currentTimeMillis();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updateddate = LocalDateTime.now();
+    }
+
     public enum Status {
         inprogress, submitted
     }
