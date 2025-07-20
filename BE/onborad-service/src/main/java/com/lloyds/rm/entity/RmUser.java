@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "rm_user")
+@Table(name = "rmuser")
 @Data
 public class RmUser {
 
@@ -23,7 +23,7 @@ public class RmUser {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "created_at")
+    @Column(name = "createddate")
     private LocalDateTime createdAt;
 
     public enum Role {

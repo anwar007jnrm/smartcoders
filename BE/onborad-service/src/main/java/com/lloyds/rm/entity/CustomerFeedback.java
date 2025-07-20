@@ -14,7 +14,7 @@ public class CustomerFeedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String applicationid;
+    private Long applicationid;
 
     @Column(columnDefinition = "TEXT")
     private String feedback;

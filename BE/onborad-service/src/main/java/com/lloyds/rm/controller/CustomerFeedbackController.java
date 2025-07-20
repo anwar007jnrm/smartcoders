@@ -17,13 +17,13 @@ public class CustomerFeedbackController {
         this.service = service;
     }
 
-  /*  @PostMapping
+    @PostMapping
     public CustomerFeedback submitFeedback(@RequestBody CustomerFeedback feedback) {
         return service.saveFeedback(feedback);
-    }*/
+    }
 
     @GetMapping("/{applicationid}")
-    public List<CustomerFeedback> getFeedbackByAppId(@PathVariable String applicationid) {
+    public List<CustomerFeedback> getFeedbackByAppId(@PathVariable Long applicationid) {
         return service.getFeedbackByApplicationId(applicationid);
     }
 }
