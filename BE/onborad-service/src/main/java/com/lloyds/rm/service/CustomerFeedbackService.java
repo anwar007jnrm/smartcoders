@@ -19,7 +19,7 @@ public class CustomerFeedbackService {
         return repository.save(feedback);
     }
 
-    public List<CustomerFeedback> getFeedbackByApplicationId(String applicationid) {
+    public List<CustomerFeedback> getFeedbackByApplicationId(Long applicationid) {
         return repository.findByApplicationidOrderByCreateddateDesc(applicationid);
     }
 }

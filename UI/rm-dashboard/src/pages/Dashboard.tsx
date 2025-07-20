@@ -6,6 +6,7 @@ import { faClipboardList, faCommentDots } from '@fortawesome/free-solid-svg-icon
 
 function Dashboard() {
   const navigate = useNavigate();
+  const rmId = localStorage.getItem('rmId');
   const rmName = localStorage.getItem('rmName');
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,18 +34,18 @@ function Dashboard() {
   const handleAssign = async (id: number) => {
     try {
       await axios.put(`http://localhost:8080/api/applications/${id}/assign`, {
-        assignedTo: rmName
+        assignedTo: rmId
       });
 
       await axios.post(`http://localhost:8080/api/rmaudit`, {
-        rmid: rmName,
+        rmid: rmId,
         applicationid: id,
         message: `Application assigned to ${rmName}`
       });
 
       setApplications(prev =>
         prev.map(app =>
-          app.id === id ? { ...app, rmid: rmName } : app
+          app.id === id ? { ...app, rmid: rmId } : app
         )
       );
     } catch (err) {
@@ -65,8 +66,8 @@ function Dashboard() {
         );
       })
       .sort((a, b) => {
-        const aMine = a.rmid === rmName ? -1 : 1;
-        const bMine = b.rmid === rmName ? -1 : 1;
+        const aMine = a.rmid === rmId ? -1 : 1;
+        const bMine = b.rmid === rmId ? -1 : 1;
         return aMine - bMine;
       });
   }, [applications, appIdSearch, firstNameSearch, lastNameSearch, emailSearch, phoneSearch, journeySearch, rmName]);
@@ -106,7 +107,7 @@ function Dashboard() {
               <tr key={app.id}>
                 <td>
                   {app.appid}
-                  {app.rmid === rmName && (
+                  {app.rmid === rmId && (
                     <>
                       <button
                         onClick={() => navigate(`/application/${app.id}`)}
@@ -134,7 +135,7 @@ function Dashboard() {
                 <td>{app.journeytype}</td>
                 <td><span className={`status ${app.status}`}></span></td>
                 <td>
-                  {app.rmid === rmName ? (
+                  {app.rmid === rmId ? (
                     <span>{app.rmid}</span>
                   ) : (
                     <button
