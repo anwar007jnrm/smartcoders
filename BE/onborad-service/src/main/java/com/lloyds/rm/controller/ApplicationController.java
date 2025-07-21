@@ -4,11 +4,11 @@ import com.lloyds.rm.entity.Application;
 import com.lloyds.rm.entity.ResumeApplication;
 import com.lloyds.rm.model.Constants;
 import com.lloyds.rm.model.NotificationType;
+import com.lloyds.rm.service.ApplicationDocumentService;
 import com.lloyds.rm.service.ApplicationService;
 import com.lloyds.rm.service.notification.NotificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -63,14 +63,6 @@ public class ApplicationController {
     @GetMapping("/resume-journey")
     public ResponseEntity<ResumeApplication> resumeJourney(@RequestParam(value = "token") String token) throws Exception {
         return ResponseEntity.ok(service.resumeJourney(token));
-    }
-
-    @PostMapping(value = "/{applicationId}/upload", consumes = "multipart/form-data")
-    public ResponseEntity<String> uploadDocuments(@RequestParam("file") MultipartFile file, @RequestParam("applicationId") String applicationId) {
-        // Logic to handle file upload
-        // For example, save the file to a storage service or database
-        // Here we just return a success message for demonstration purposes
-        return ResponseEntity.ok("File uploaded successfully for application ID: " + applicationId);
     }
 
     @PutMapping("/{applicationId}/assign")
