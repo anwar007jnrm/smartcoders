@@ -45,14 +45,11 @@ public class ApplicationController {
     }
 
     @PutMapping
-    public Application saveAndContinue(@RequestBody Application app, @RequestHeader Map<String, String> headers, @RequestParam("file") MultipartFile multipartFile) throws Exception {
+    public Application saveAndContinue(@RequestBody Application app, @RequestHeader Map<String, String> headers) throws Exception {
         String sessionStatus = headers.get(Constants.SESSION_STATUS);
         if (sessionStatus == null || !sessionStatus.equals(Constants.IN_PROGRESS)) {
             notificationServices.get(NotificationType.MAIL.getServiceName()).sendNotification(app.getAppid(), app.getEmail());
            // notificationServices.get(NotificationType.SMS.getServiceName()).sendNotification(app.getAppid(), app.getMobilenumber());
-            if (sessionStatus.equals(Constants.TERMINATED)){
-                return app;
-            }
         }
         return service.updateApplication(app.getAppid(), app);
     }
@@ -63,13 +60,10 @@ public class ApplicationController {
         return ResponseEntity.ok("Application submitted successfully with ID: " + app.getAppid());
     }
 
-    /*public ResumeApplication resumeJourney(@RequestParam String token) {
-        Application app = service.getApplication(Long.parseLong(applicationId));
-        if (app == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(app);
-    }*/
+    @GetMapping("/resume-journey")
+    public ResponseEntity<ResumeApplication> resumeJourney(@RequestParam(value = "token") String token) throws Exception {
+        return ResponseEntity.ok(service.resumeJourney(token));
+    }
 
     @PostMapping(value = "/{applicationId}/upload", consumes = "multipart/form-data")
     public ResponseEntity<String> uploadDocuments(@RequestParam("file") MultipartFile file, @RequestParam("applicationId") String applicationId) {

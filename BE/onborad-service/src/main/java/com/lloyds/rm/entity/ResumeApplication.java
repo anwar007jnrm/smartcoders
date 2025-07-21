@@ -4,8 +4,6 @@ import lombok.Data;
 
 @Data
 public class ResumeApplication {
-    private String applicationId;
-    private String appId;
-    private String email;
-    private String mobileNumber;
+    private Long applicationId;
+    private String message;
 }

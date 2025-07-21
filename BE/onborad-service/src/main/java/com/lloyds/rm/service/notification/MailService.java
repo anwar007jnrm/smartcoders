@@ -1,44 +1,29 @@
 package com.lloyds.rm.service.notification;
 
+import com.lloyds.rm.Util.EncryptionUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import java.util.Base64;
-
 @Service
 public class MailService implements NotificationService {
     private final JavaMailSender mailSender;
-    private final SecretKey secretKey;
 
-    public MailService(JavaMailSender mailSender) throws Exception {
+    @Value("${encryption.key}")
+    private String secretKey;
+
+    public MailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
-        this.secretKey = generateSecretKey();
     }
-
-    private SecretKey generateSecretKey() throws Exception {
-        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-        keyGen.init(128); // AES key size
-        return keyGen.generateKey();
-    }
-    public String encryptParam(String param) throws Exception {
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        byte[] encryptedBytes = cipher.doFinal(param.getBytes());
-        return Base64.getEncoder().encodeToString(encryptedBytes);
-    }
-
 
     @Override
     @Async
     public void sendNotification(String applicationId, String email) throws Exception {
         // Logic to send mail notification
 
-        String resumeLink = "http://localhost:3000/resumeJourney?token=" + encryptParam(applicationId);
+        String resumeLink = "http://localhost:3000/resumeJourney?token=" + EncryptionUtil.encrypt(applicationId, secretKey);
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);

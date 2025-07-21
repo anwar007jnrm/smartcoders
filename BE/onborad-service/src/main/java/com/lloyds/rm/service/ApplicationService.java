@@ -1,7 +1,12 @@
 package com.lloyds.rm.service;
 
+import com.lloyds.rm.Util.EncryptionUtil;
+import com.lloyds.rm.Util.MaskUtil;
 import com.lloyds.rm.entity.Application;
+import com.lloyds.rm.entity.ResumeApplication;
+import com.lloyds.rm.model.OtpRequest;
 import com.lloyds.rm.repository.ApplicationRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -11,9 +16,14 @@ import java.util.List;
 public class ApplicationService {
 
     private final ApplicationRepository repo;
+    private final OtpService otpService;
 
-    public ApplicationService(ApplicationRepository repo) {
+    @Value("${encryption.key}")
+    private String secretKey;
+
+    public ApplicationService(ApplicationRepository repo, OtpService otpService) {
         this.repo = repo;
+        this.otpService = otpService;
     }
 
     public List<Application> getAllApplications() {
@@ -48,5 +58,18 @@ public class ApplicationService {
 
     public Application getApplication(Long applicationId) {
         return repo.findById(applicationId).get();
+    }
+
+    public ResumeApplication resumeJourney(String token) throws Exception {
+        String  applicationId = EncryptionUtil.decrypt(token, secretKey);
+        Application app = repo.findByAppid(applicationId).orElseThrow();
+        OtpRequest otpRequest = new OtpRequest();
+        otpRequest.setMode("sms");
+        otpRequest.setRecipient(app.getMobilenumber());
+        otpService.generateOtp(otpRequest);
+        ResumeApplication resumeApp = new ResumeApplication();
+        resumeApp.setApplicationId(app.getId());
+        resumeApp.setMessage("OTP sent to your registered mobile number: " + MaskUtil.maskMobileNumber(app.getMobilenumber()));
+        return resumeApp;
     }
 }
