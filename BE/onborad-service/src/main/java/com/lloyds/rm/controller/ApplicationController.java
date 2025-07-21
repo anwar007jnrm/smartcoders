@@ -4,7 +4,6 @@ import com.lloyds.rm.entity.Application;
 import com.lloyds.rm.entity.ResumeApplication;
 import com.lloyds.rm.model.Constants;
 import com.lloyds.rm.model.NotificationType;
-import com.lloyds.rm.service.ApplicationDocumentService;
 import com.lloyds.rm.service.ApplicationService;
 import com.lloyds.rm.service.notification.NotificationService;
 import org.springframework.http.ResponseEntity;
