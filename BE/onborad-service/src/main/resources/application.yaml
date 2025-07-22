@@ -27,3 +27,14 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+error-config:
+  error-details:
+    - errorCode: "1000"
+      errorMessage: "Service error occurred"
+      errorType: "ServiceException"
+      statusCode: 400
+    - errorCode: "1001"
+      errorMessage: "An unexpected error occurred"
+      errorType: "GenericException"
+      statusCode: 500
