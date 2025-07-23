@@ -5,7 +5,7 @@
 	<groupId>com.stackpuz</groupId>
 	<artifactId>onboard-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>example-crud</name>
+	<name>onboard-service</name>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -40,10 +40,14 @@
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
 		<dependency>

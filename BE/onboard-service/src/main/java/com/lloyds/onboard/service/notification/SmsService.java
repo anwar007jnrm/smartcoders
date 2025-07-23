@@ -11,7 +11,7 @@ public class SmsService implements NotificationService {
     private String apiKey;
     private final RestTemplate restTemplate = new RestTemplate();
     @Override
-    public void sendNotification(String applicationId, String mobile) {
+    public void sendNotification(String applicationId, String mobile, String firstname, String journeytype) {
         // Logic to send SMS notification
         String resumeUrl = "https://example.com/resume-journey/" + applicationId;
         String url = "https://2factor.in/API/V1/" + apiKey + "/SMS/" + mobile + "/" + resumeUrl;

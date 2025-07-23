@@ -3,30 +3,37 @@ package com.lloyds.onboard.service.notification;
 import com.lloyds.onboard.Util.EncryptionUtil;
 import com.lloyds.onboard.exception.ServiceException;
 import com.lloyds.onboard.model.Constants;
+import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+
+import java.util.Map;
 
 @Service
 @Slf4j
 public class MailService implements NotificationService {
     private final JavaMailSender mailSender;
+    private final TemplateEngine templateEngine;
 
     @Value("${encryption.key}")
     private String secretKey;
     @Value("${resume-journey.url}")
     private String resumeUrl;
 
-    public MailService(JavaMailSender mailSender) {
+    public MailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
         this.mailSender = mailSender;
+        this.templateEngine = templateEngine;
     }
 
     @Override
     @Async
-    public void sendNotification(String applicationId, String email) throws ServiceException {
+    public void sendNotification(String applicationId, String email, String name, String journey) throws ServiceException {
         // Logic to send mail notification
         String token;
         try {
@@ -36,14 +43,24 @@ public class MailService implements NotificationService {
             throw new ServiceException(Constants.ENCRYPTION_ERROR);
         }
         String resumeLink = resumeUrl + token;
+        Map<String, Object> model = Map.of(
+                "name", name,
+                "journey", journey,
+                "resumeLink", resumeLink
+        );
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Resume Journey " + applicationId);
-        message.setText("Please resume your journey for applicationId: " + applicationId+
-                        ". Click here to resume: " + resumeLink);
-        log.info("Sending  mail notification"+ resumeLink);
+        Context context = new Context();
+        context.setVariables(model);
+
+        String htmlContent = templateEngine.process("email-template", context);
         try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(email);
+            helper.setSubject(Constants.EMAIL_SUBJECT + applicationId);
+            helper.setText(htmlContent, true);
+            log.info("Sending  mail notification" + resumeLink);
+
             mailSender.send(message);
         } catch (Exception e) {
             log.error("Error sending mail notification", e);

@@ -6,9 +6,11 @@ import com.lloyds.onboard.model.Constants;
 import com.lloyds.onboard.model.NotificationType;
 import com.lloyds.onboard.service.ApplicationService;
 import com.lloyds.onboard.service.notification.NotificationService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +48,7 @@ public class ApplicationController {
     public Application saveAndContinue(@RequestBody Application app, @RequestHeader Map<String, String> headers) throws Exception {
         String sessionStatus = headers.get(Constants.SESSION_STATUS);
         if (sessionStatus == null || !sessionStatus.equals(Constants.IN_PROGRESS)) {
-            notificationServices.get(NotificationType.MAIL.getServiceName()).sendNotification(app.getAppid(), app.getEmail());
+            notificationServices.get(NotificationType.MAIL.getServiceName()).sendNotification(app.getAppid(), app.getEmail(), app.getFirstname(), app.getJourneytype());
            // notificationServices.get(NotificationType.SMS.getServiceName()).sendNotification(app.getAppid(), app.getMobilenumber());
         }
         return service.updateApplication(app.getAppid(), app);
@@ -55,7 +57,8 @@ public class ApplicationController {
     @PostMapping("/submit-application")
     public ResponseEntity<String> submitApplication(@RequestBody Application app) {
         service.updateApplication(app.getAppid(), app);
-        return ResponseEntity.ok("Application submitted successfully with ID: " + app.getAppid());
+        URI uri = URI.create("/PCAAccounts.html");
+        return ResponseEntity.status(HttpStatus.SEE_OTHER).location(uri).build();
     }
 
     @GetMapping("/resume-journey")

@@ -1,7 +1,7 @@
 package com.lloyds.onboard.model;
 
 public interface Constants {
-    String SESSION_STATUS = "sessionStatus";
+    String SESSION_STATUS = "sessionstatus";
     String IN_PROGRESS = "IN_PROGRESS";
     String APPLICATION_ID_NOT_FOUND = "1001";
     String INTERNAL_SERVER_ERROR = "1002";
@@ -15,4 +15,6 @@ public interface Constants {
     String RESUME_JOURNEY_ERROR = "1010";
     String ENCRYPTION_ERROR = "1011";
     String DECRYPTION_ERROR = "1012";
+
+    String EMAIL_SUBJECT ="Just One Step Away – Resume Your Journey Today ";
 }
