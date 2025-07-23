@@ -8,6 +8,7 @@ import com.lloyds.rm.exception.ServiceException;
 import com.lloyds.rm.model.Constants;
 import com.lloyds.rm.model.OtpRequest;
 import com.lloyds.rm.repository.ApplicationRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 public class ApplicationService {
 
     private final ApplicationRepository repo;
@@ -37,7 +39,7 @@ public class ApplicationService {
     }
 
     public Application assignToRM(Long id, String rmid) {
-        Application app = repo.findById(id).orElseThrow();
+        Application app = repo.findById(id).orElseThrow(() -> new ServiceException(Constants.APPLICATION_ID_NOT_FOUND));
         app.setRmid(rmid);
         return repo.save(app);
     }
@@ -47,7 +49,7 @@ public class ApplicationService {
     }
 
     public Application updateApplication(String appid, Application updated) {
-        Application existing = repo.findByAppid(appid).orElseThrow();
+        Application existing = repo.findByAppid(appid).orElseThrow(() -> new ServiceException(Constants.APPLICATION_ID_NOT_FOUND));
         updated.setId(existing.getId());
         updated.setCreateddate(existing.getCreateddate());
         updated.setUpdateddate(LocalDateTime.now());
@@ -62,9 +64,15 @@ public class ApplicationService {
         return repo.findById(applicationId).orElseThrow(() -> new ServiceException(Constants.APPLICATION_ID_NOT_FOUND));
     }
 
-    public ResumeApplication resumeJourney(String token) throws Exception {
-        String  applicationId = EncryptionUtil.decrypt(token, secretKey);
-        Application app = repo.findByAppid(applicationId).orElseThrow();
+    public ResumeApplication resumeJourney(String token) throws ServiceException {
+        String applicationId;
+        try {
+            applicationId = EncryptionUtil.decrypt(token, secretKey);
+        } catch (Exception e) {
+            log.error("Error decrypting applicationId", e);
+            throw new ServiceException(Constants.DECRYPTION_ERROR);
+        }
+        Application app = repo.findByAppid(applicationId).orElseThrow(() -> new ServiceException(Constants.APPLICATION_ID_NOT_FOUND));
         OtpRequest otpRequest = new OtpRequest();
         otpRequest.setMode("sms");
         otpRequest.setRecipient(app.getMobilenumber());

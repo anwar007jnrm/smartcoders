@@ -1,6 +1,8 @@
 package com.lloyds.rm.service;
 
 import com.lloyds.rm.entity.ApplicationDocument;
+import com.lloyds.rm.exception.ServiceException;
+import com.lloyds.rm.model.Constants;
 import com.lloyds.rm.repository.ApplicationDocumentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,14 +31,12 @@ public class ApplicationDocumentService {
     }
 
 
-    public Optional<ApplicationDocument> getDocument(Long documentId) {
-        return repository.findById(documentId);
+    public ApplicationDocument getDocument(Long documentId) {
+        return repository.findById(documentId).orElseThrow(() -> new ServiceException(Constants.DOCUMENT_ID_NOT_FOUND));
     }
 
     public ApplicationDocument updateDocument(Long documentId, MultipartFile file, String fieldName, int pageNumber) throws IOException {
-        ApplicationDocument document = repository.findById(documentId)
-                .orElseThrow(() -> new IllegalArgumentException("Document not found with ID: " + documentId));
-
+        ApplicationDocument document = repository.findById(documentId).orElseThrow(() -> new ServiceException(Constants.DOCUMENT_ID_NOT_FOUND));
         document.setFileName(file.getOriginalFilename());
         document.setFileType(file.getContentType());
         document.setFileContent(file.getBytes());

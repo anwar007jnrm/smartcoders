@@ -20,9 +20,8 @@ public class DocumentController {
 
     @GetMapping("/{documentId}")
     public ResponseEntity<ApplicationDocument> getDocument(@PathVariable Long documentId) {
-        Optional<ApplicationDocument> document = documentService.getDocument(documentId);
-        return document.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        ApplicationDocument document = documentService.getDocument(documentId);
+        return ResponseEntity.ok(document);
     }
 
     @PostMapping(value = "/upload", consumes = "multipart/form-data")

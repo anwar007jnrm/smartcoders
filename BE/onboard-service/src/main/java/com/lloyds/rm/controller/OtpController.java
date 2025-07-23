@@ -24,7 +24,6 @@ public class OtpController {
 
     @PostMapping("/generate")
     public ResponseEntity<Map<String, Object>> generateOtp(@RequestBody OtpRequest request) {
-
         String result = otpService.generateOtp(request);
         boolean success = result.contains("successfully");
         Map<String, Object> response = new HashMap<>();

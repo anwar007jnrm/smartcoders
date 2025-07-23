@@ -1,6 +1,9 @@
 package com.lloyds.rm.service;
 
+
 import com.lloyds.rm.entity.Otp;
+import com.lloyds.rm.exception.ServiceException;
+import com.lloyds.rm.model.Constants;
 import com.lloyds.rm.model.OtpRequest;
 import com.lloyds.rm.model.OtpVerifyRequest;
 import com.lloyds.rm.repository.OtpRepository;
@@ -12,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Random;
 
 @Slf4j
@@ -34,7 +36,7 @@ public class OtpService {
         this.mailSender = mailSender;
     }
 
-    public String generateOtp(OtpRequest request) {
+    public String generateOtp(OtpRequest request) throws ServiceException {
         String otp = String.valueOf(100000 + new Random().nextInt(900000));
 
         if ("sms".equalsIgnoreCase(request.getMode())) {
@@ -42,7 +44,7 @@ public class OtpService {
         } else if ("email".equalsIgnoreCase(request.getMode())) {
             sendOtpViaEmail(request.getRecipient(), otp);
         } else {
-            return "Invalid mode. Use 'sms' or 'email'";
+            throw new ServiceException(Constants.INVALID_MODE_ERROR);
         }
 
         Otp entity = new Otp();
@@ -57,26 +59,33 @@ public class OtpService {
         return "OTP sent successfully via " + request.getMode();
     }
 
-    private void sendOtpViaSms(String mobile, String otp) {
+    private void sendOtpViaSms(String mobile, String otp) throws ServiceException {
         String url = "https://2factor.in/API/V1/" + apiKey + "/SMS/" + mobile + "/" + otp;
         log.info("2factor url" + url);
-        restTemplate.getForObject(url, String.class);
+        try {
+            restTemplate.getForObject(url, String.class);
+        } catch (Exception e) {
+            log.error("Error sending OTP via SMS: {}", e.getMessage());
+            throw new ServiceException(Constants.SMS_SEND_ERROR);
+        }
     }
 
-    private void sendOtpViaEmail(String to, String otp) {
+    private void sendOtpViaEmail(String to, String otp) throws ServiceException {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Your OTP Code");
         message.setText("Your OTP is: " + otp);
-        mailSender.send(message);
+        try {
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("Error sending OTP via Email: {}", e.getMessage());
+            throw new ServiceException(Constants.EMAIL_SEND_ERROR);
+        }
     }
 
-    public String verifyOtp(OtpVerifyRequest request) {
-        Optional<Otp> latestOtp = otpRepository.findTopByRecipientOrderByCreatedateDesc(request.getRecipient());
-
-        if (latestOtp.isEmpty()) return "OTP not found.";
-
-        Otp otp = latestOtp.get();
+    public String verifyOtp(OtpVerifyRequest request) throws ServiceException {
+        Otp otp = otpRepository.findTopByRecipientOrderByCreatedateDesc(request.getRecipient())
+                .orElseThrow(() -> new ServiceException(Constants.OTP_NOT_FOUND));
 
         if (otp.isUsed()) return "OTP already used.";
         if (!otp.getOtp().equals(request.getOtp())) return "Invalid OTP.";
