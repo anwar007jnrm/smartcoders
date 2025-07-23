@@ -2,6 +2,7 @@ package com.lloyds.rm.controller;
 
 import com.lloyds.rm.entity.Application;
 import com.lloyds.rm.entity.ResumeApplication;
+import com.lloyds.rm.exception.ServiceException;
 import com.lloyds.rm.model.Constants;
 import com.lloyds.rm.model.NotificationType;
 import com.lloyds.rm.service.ApplicationService;

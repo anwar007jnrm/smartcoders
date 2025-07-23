@@ -4,6 +4,8 @@ import com.lloyds.rm.Util.EncryptionUtil;
 import com.lloyds.rm.Util.MaskUtil;
 import com.lloyds.rm.entity.Application;
 import com.lloyds.rm.entity.ResumeApplication;
+import com.lloyds.rm.exception.ServiceException;
+import com.lloyds.rm.model.Constants;
 import com.lloyds.rm.model.OtpRequest;
 import com.lloyds.rm.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,7 +59,7 @@ public class ApplicationService {
     }
 
     public Application getApplication(Long applicationId) {
-        return repo.findById(applicationId).get();
+        return repo.findById(applicationId).orElseThrow(() -> new ServiceException(Constants.APPLICATION_ID_NOT_FOUND));
     }
 
     public ResumeApplication resumeJourney(String token) throws Exception {

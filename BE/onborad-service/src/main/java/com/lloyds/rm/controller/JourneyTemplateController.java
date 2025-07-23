@@ -9,7 +9,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/journeys")
-@CrossOrigin(origins = "*")
 public class JourneyTemplateController {
 
     @Autowired

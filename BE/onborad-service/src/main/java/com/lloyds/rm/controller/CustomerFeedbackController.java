@@ -8,7 +8,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/customerfeedback")
-@CrossOrigin(origins = "*")
 public class CustomerFeedbackController {
 
     private final CustomerFeedbackService service;

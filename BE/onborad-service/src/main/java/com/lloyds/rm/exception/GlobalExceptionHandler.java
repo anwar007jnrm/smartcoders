@@ -11,39 +11,28 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final ErrorConfig errorConfig;
     private final Map<String, ErrorDetails> errorDetailsMap;
 
     private final ErrorDetails defualtErrorDetails = ErrorDetails.builder()
             .errorMessage("An unexpected error occurred")
             .errorType("UnknownError")
             .statusCode(500)
+            .errorCode("9999")
             .build();
 
     public GlobalExceptionHandler(ErrorConfig errorConfig) {
-        this.errorConfig = errorConfig;
         this.errorDetailsMap = errorConfig.getErrorDetails().stream()
                 .collect(Collectors.toMap(ErrorDetails::getErrorCode, errorDetails -> errorDetails));
     }
 
     @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<ErrorResponse> handleServiceException(ServiceException ex) {
+    public ResponseEntity<ErrorDetails> handleServiceException(ServiceException ex) {
         ErrorDetails errorDetails = errorDetailsMap.getOrDefault(ex.getErrorCode(), defualtErrorDetails);
-        return ResponseEntity.status(errorDetails.getStatusCode())
-                .body(ErrorResponse.builder()
-                        .errorCode(ex.getErrorCode())
-                        .errorMessage(errorDetails.getErrorMessage())
-                        .errorType(errorDetails.getErrorType())
-                        .build());
+        return ResponseEntity.status(errorDetails.getStatusCode()).body(errorDetails);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        return ResponseEntity.status(defualtErrorDetails.getStatusCode())
-                .body(ErrorResponse.builder()
-                        .errorCode("9999")
-                        .errorMessage(defualtErrorDetails.getErrorMessage())
-                        .errorType(defualtErrorDetails.getErrorType())
-                        .build());
+    public ResponseEntity<ErrorDetails> handleGenericException(Exception ex) {
+        return ResponseEntity.status(defualtErrorDetails.getStatusCode()).body(defualtErrorDetails);
     }
 }
