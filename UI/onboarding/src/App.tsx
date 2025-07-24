@@ -1,4 +1,6 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import store from './store';
 import {
   AppBar,
   Toolbar,
@@ -18,6 +20,8 @@ import { styled, alpha } from '@mui/material/styles';
 import { BrowserRouter as Router, Link as RouterLink, Routes, Route } from "react-router-dom";
 import Register from './Pages/Register';
 import StartApplication from './Pages/StartApplication';
+import './App.css';
+import ResumeApplication from './Pages/ResumeApplication';
 
 // Styled component for the search bar, mimicking the image's style
 const Search = styled('div')(({ theme }) => ({
@@ -72,6 +76,7 @@ function AppRoutes() {
       <Route path="/" element={<Home />} />
       <Route path="/setup-account" element={<Register />} />
       <Route path="/get-started" element={<StartApplication />} />
+      <Route path="/resumeJourney" element={<ResumeApplication />} />
     </Routes>
   );
 }
@@ -96,10 +101,10 @@ function Home() {
 
 function App() {
   return (
-    <>
+    <Provider store={store}>
       <Header />
       <AppRoutes />
-    </>
+    </Provider>
   );
 }
 
