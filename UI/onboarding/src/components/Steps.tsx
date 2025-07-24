@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import { useNavigate } from "react-router-dom";
 import { updateApplication, getApplication, uploadDocument, submitApplication } from '../Services/ApiService';
 
 interface StepConfig {
@@ -73,6 +74,7 @@ const Steps: React.FC<StepsProps> = ({ stepsConfig, formJson }) => {
     message: '',
   });
 
+  const navigate = useNavigate();
   if (!stepsConfig.length) return <></>;
 
   const handleBack = () => setCurrentStep(prev => prev - 1);
@@ -114,8 +116,9 @@ const Steps: React.FC<StepsProps> = ({ stepsConfig, formJson }) => {
       return;
     }
     try {
+      setAlert({ open: true, type: 'success', message: 'Application is in progress' });
       await updateApplication(id, currentStep, formData);
-      setAlert({ open: true, type: 'success', message: 'Application is saved' });
+      navigate('/');
     } catch (error) {
       setAlert({ open: true, type: 'error', message: 'Failed to save application' });
     }

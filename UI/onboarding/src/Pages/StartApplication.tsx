@@ -125,6 +125,7 @@ const StartApplication: React.FC = () => {
           <Typography variant="h6" sx={{ mb: 2 }}>
             Personal Details
           </Typography>
+
           <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
             <TextField
               select
@@ -134,11 +135,15 @@ const StartApplication: React.FC = () => {
               onChange={handleChange}
               required
               sx={{ minWidth: 120 }}
+              size="small"
             >
               {salutationOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
               ))}
             </TextField>
+
             <TextField
               label="First Name"
               name="firstname"
@@ -146,6 +151,7 @@ const StartApplication: React.FC = () => {
               onChange={handleChange}
               required
               sx={{ flex: 1 }}
+              size="small"
             />
             <TextField
               label="Last Name"
@@ -154,8 +160,10 @@ const StartApplication: React.FC = () => {
               onChange={handleChange}
               required
               sx={{ flex: 1 }}
+              size="small"
             />
           </Box>
+
           <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
             <TextField
               label="Email"
@@ -165,6 +173,7 @@ const StartApplication: React.FC = () => {
               required
               sx={{ flex: 1 }}
               type="email"
+              size="small"
             />
             <TextField
               label="Postal Code"
@@ -173,8 +182,10 @@ const StartApplication: React.FC = () => {
               onChange={handleChange}
               required
               sx={{ flex: 1 }}
+              size="small"
             />
           </Box>
+
           <Box sx={{ mb: 2 }}>
             <TextField
               label="Address"
@@ -185,8 +196,10 @@ const StartApplication: React.FC = () => {
               fullWidth
               multiline
               minRows={2}
+              size="small"
             />
           </Box>
+
           <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
             <TextField
               label="Mobile Number"
@@ -195,17 +208,19 @@ const StartApplication: React.FC = () => {
               onChange={handleChange}
               required
               sx={{ flex: 1 }}
+              size="small"
             />
             <Button
               variant="contained"
               color="primary"
               sx={{ minWidth: 120 }}
               onClick={handleSendOtp}
-              disabled={  otpSent  || !form.mobilenumber}
+              disabled={otpSent || !form.mobilenumber}
             >
               {otpSent ? 'OTP Sent' : 'Send OTP'}
             </Button>
           </Box>
+
           {otpSent && (
             <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
               <TextField
@@ -217,10 +232,11 @@ const StartApplication: React.FC = () => {
                 required
                 sx={{ flex: 1 }}
                 disabled={otpVerified}
+                size="small"
               />
               <Button
                 variant="contained"
-                color={otpVerified ? "success" : "primary"}
+                color={otpVerified ? 'success' : 'primary'}
                 onClick={handleVerifyOtp}
                 disabled={otpVerified}
                 sx={{ minWidth: 120 }}
@@ -229,18 +245,19 @@ const StartApplication: React.FC = () => {
               </Button>
             </Box>
           )}
+
           <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
             <Button
               variant="contained"
               disabled={!otpVerified || loading}
-              sx={{ bgcolor: "black", fontWeight: 700, color: "white" }}
+              sx={{ bgcolor: 'black', fontWeight: 700, color: 'white' }}
               onClick={handleSubmit}
-
             >
               {loading ? 'Submitting...' : 'Submit'}
             </Button>
           </Box>
         </Box>
+
         <Snackbar
           open={alert.open}
           autoHideDuration={4000}

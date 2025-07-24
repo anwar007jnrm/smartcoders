@@ -61,10 +61,10 @@ function Header() {
         <Toolbar sx={{ justifyContent: 'space-between', textAlign: 'center' }}>
           <Box component="img" src="logo-lloyds.svg" alt="Lloyds Bank logo" sx={{ height: 50, mr: 1, ml: 22 }} />
           <Box sx={{ width: 1000, mr: 2 }}>
-            <IconButton size="small" sx={{ color: 'black', fontWeight: 'bold', mr: 2 }} component={RouterLink} to="/get-started" > <LockRoundedIcon /> Log on |</IconButton>
+            <IconButton size="small" sx={{ color: 'black', fontWeight: 'bold', mr: 2 }} component={RouterLink} to="#" > <LockRoundedIcon /> Log on |</IconButton>
             <Button size="small" sx={{ color: 'black', fontWeight: 'bold', mr: 2 }}
               component={RouterLink}
-              to="/setup-account"
+              to="/get-started"
             > <AssuredWorkloadRoundedIcon /> Open a new account</Button>
           </Box>
         </Toolbar>
