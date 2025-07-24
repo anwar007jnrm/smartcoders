@@ -51,8 +51,8 @@ class DocumentControllerTest {
 
         mockMvc.perform(multipart("/api/documents/upload")
                         .file(mockFile)
-                        .param("applicationId", "1")
-                        .param("pageNumber", "1")
+                        .param("id", "1")
+                        .param("currentPage", "1")
                         .param("fieldName", "passport"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Document uploaded successfully with ID: 101"));
@@ -66,8 +66,8 @@ class DocumentControllerTest {
 
         mockMvc.perform(multipart("/api/documents/upload")
                         .file(mockFile)
-                        .param("applicationId", "2")
-                        .param("pageNumber", "1")
+                        .param("id", "2")
+                        .param("currentPage", "1")
                         .param("fieldName", "passport"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().string("Error uploading document: File failed"));

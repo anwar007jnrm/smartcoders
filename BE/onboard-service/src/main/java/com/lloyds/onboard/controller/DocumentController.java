@@ -24,12 +24,12 @@ public class DocumentController {
 
     @PostMapping(value = "/upload", consumes = "multipart/form-data")
     public ResponseEntity<String> uploadDocument(
-            @RequestParam("applicationId") Long applicationId,
-            @RequestParam("pageNumber") int pageNumber,
+            @RequestParam("id") Long id,
+            @RequestParam("currentPage") int pageNumber,
             @RequestParam("fieldName") String fieldName,
             @RequestParam("file") MultipartFile file) {
         try {
-            ApplicationDocument document = documentService.saveDocument(applicationId, pageNumber, fieldName, file);
+            ApplicationDocument document = documentService.saveDocument(id, pageNumber, fieldName, file);
             return ResponseEntity.ok("Document uploaded successfully with ID: " + document.getId());
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error uploading document: " + e.getMessage());

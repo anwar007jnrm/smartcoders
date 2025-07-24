@@ -18,9 +18,9 @@ public class ApplicationDocumentService {
         this.repository = repository;
     }
 
-    public ApplicationDocument saveDocument(Long applicationId, int pageNumber, String fieldName, MultipartFile file) throws IOException {
+    public ApplicationDocument saveDocument(Long id, int pageNumber, String fieldName, MultipartFile file) throws IOException {
         ApplicationDocument document = new ApplicationDocument();
-        document.setApplicationId(applicationId);
+        document.setApplicationId(id);
         document.setPageNumber(pageNumber);
         document.setFieldName(fieldName);
         document.setFileName(file.getOriginalFilename());
