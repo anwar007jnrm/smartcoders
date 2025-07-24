@@ -3,14 +3,14 @@ INSERT INTO applications (appid, journeytype, status, rmid, salutation, firstnam
 VALUES (
            'LOA-1001', 'Loan', 'inprogress', 'anwar', 'Mr', 'Anwar', 'Sk', '+91','9876543210',
            'anwar@example.com', '123 MG Road, Bangalore', '560001',
-           '{"loanAmount": 500000, "tenure": 36}', 1, '2025-07-15 10:00:00', '2025-07-15 10:00:00'
+           '{"loanAmount": 500000, "tenure": 36}', 1, '2025-07-20 10:00:00', '2025-07-15 10:00:00'
        );
 
 INSERT INTO applications (appid, journeytype, status, rmid, salutation, firstname, lastname, countryCode, mobilenumber, email, address, postalcode, formdata, currentpage, createddate, updateddate)
 VALUES (
            'LOA-1003', 'Loan', 'inprogress', 'rahul', 'Mr', 'test', 'Tm', '+91','9876543210',
            'test@example.com', '123 MG Road, Bangalore', '560001',
-           '{"loanAmount": 700000, "tenure": 36}', 1, '2025-07-20 10:00:00', '2025-07-20 10:00:00'
+           '{"loanAmount": 700000, "tenure": 36}', 1, '2025-07-25 10:00:00', '2025-07-20 10:00:00'
        );
 
 
