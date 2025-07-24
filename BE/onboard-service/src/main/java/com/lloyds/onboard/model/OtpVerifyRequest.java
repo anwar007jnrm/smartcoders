@@ -6,6 +6,7 @@ import lombok.Data;
 public class OtpVerifyRequest {
     private String recipient;
     private String otp;
+    private Long id;
 
     // Getters and Setters
 }

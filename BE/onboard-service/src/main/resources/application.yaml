@@ -59,7 +59,7 @@ error-config:
       errorType: "InternalServerError"
       statusCode: 500
     - errorCode: "1003"
-      errorMessage: "Malformed, missing, or invalid request"
+      errorMessage: "Invalid mobile number"
       errorType: "BadRequestError"
       statusCode: 400
     - errorCode: "1004"

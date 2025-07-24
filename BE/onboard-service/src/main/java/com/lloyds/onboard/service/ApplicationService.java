@@ -78,7 +78,7 @@ public class ApplicationService {
         otpRequest.setRecipient(app.getMobilenumber());
         otpService.generateOtp(otpRequest);
         ResumeApplication resumeApp = new ResumeApplication();
-        resumeApp.setApplicationId(app.getId());
+        resumeApp.setId(app.getId());
         resumeApp.setMessage("OTP sent to your registered mobile number: " + MaskUtil.maskMobileNumber(app.getMobilenumber()));
         return resumeApp;
     }

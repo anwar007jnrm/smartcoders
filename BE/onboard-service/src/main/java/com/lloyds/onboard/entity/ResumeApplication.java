@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ResumeApplication {
-    private Long applicationId;
+    private Long id;
     private String message;
 }

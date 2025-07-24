@@ -1,13 +1,16 @@
 package com.lloyds.onboard.service;
 
 
+import com.lloyds.onboard.entity.Application;
 import com.lloyds.onboard.entity.Otp;
 import com.lloyds.onboard.exception.ServiceException;
 import com.lloyds.onboard.model.Constants;
 import com.lloyds.onboard.model.OtpRequest;
 import com.lloyds.onboard.model.OtpVerifyRequest;
+import com.lloyds.onboard.repository.ApplicationRepository;
 import com.lloyds.onboard.repository.OtpRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -27,11 +30,14 @@ public class OtpService {
     @Value("${otp.expiry.minutes:5}")
     private int expiryMinutes;
 
+    private final ApplicationRepository applicationRepository;
+
     private final OtpRepository otpRepository;
     private final JavaMailSender mailSender;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public OtpService(OtpRepository otpRepository, JavaMailSender mailSender) {
+    public OtpService(ApplicationRepository applicationRepository, OtpRepository otpRepository, JavaMailSender mailSender) {
+        this.applicationRepository = applicationRepository;
         this.otpRepository = otpRepository;
         this.mailSender = mailSender;
     }
@@ -84,7 +90,16 @@ public class OtpService {
     }
 
     public String verifyOtp(OtpVerifyRequest request) throws ServiceException {
-        Otp otp = otpRepository.findTopByRecipientOrderByCreatedateDesc(request.getRecipient())
+       String mobileNumber = null;
+        if(request.getId() != null){
+            Application application = applicationRepository.findById(request.getId()).orElseThrow(() -> new ServiceException(Constants.APPLICATION_ID_NOT_FOUND));
+            mobileNumber = application.getMobilenumber();
+        } else if (request.getRecipient() != null) {
+            mobileNumber = request.getRecipient();
+        } else {
+            throw new ServiceException(Constants.INVALID_MOBILE_NUMBER);
+        }
+        Otp otp = otpRepository.findTopByRecipientOrderByCreatedateDesc(mobileNumber)
                 .orElseThrow(() -> new ServiceException(Constants.OTP_NOT_FOUND));
 
         if (otp.isUsed()) return "OTP already used.";
