@@ -1,4 +1,9 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import store, { persistor } from './store';
+import { PersistGate } from 'redux-persist/integration/react';
 import {
   AppBar,
   Toolbar,
@@ -18,6 +23,9 @@ import { styled, alpha } from '@mui/material/styles';
 import { BrowserRouter as Router, Link as RouterLink, Routes, Route } from "react-router-dom";
 import Register from './Pages/Register';
 import StartApplication from './Pages/StartApplication';
+import './App.css';
+import ResumeApplication from './Pages/ResumeApplication';
+
 
 // Styled component for the search bar, mimicking the image's style
 const Search = styled('div')(({ theme }) => ({
@@ -53,10 +61,10 @@ function Header() {
         <Toolbar sx={{ justifyContent: 'space-between', textAlign: 'center' }}>
           <Box component="img" src="logo-lloyds.svg" alt="Lloyds Bank logo" sx={{ height: 50, mr: 1, ml: 22 }} />
           <Box sx={{ width: 1000, mr: 2 }}>
-            <IconButton size="small" sx={{ color: 'black', fontWeight: 'bold', mr: 2 }} component={RouterLink}  to="/get-started" > <LockRoundedIcon /> Log on |</IconButton>
+            <IconButton size="small" sx={{ color: 'black', fontWeight: 'bold', mr: 2 }} component={RouterLink} to="#" > <LockRoundedIcon /> Log on |</IconButton>
             <Button size="small" sx={{ color: 'black', fontWeight: 'bold', mr: 2 }}
               component={RouterLink}
-              to="/setup-account"
+              to="/get-started"
             > <AssuredWorkloadRoundedIcon /> Open a new account</Button>
           </Box>
         </Toolbar>
@@ -72,6 +80,7 @@ function AppRoutes() {
       <Route path="/" element={<Home />} />
       <Route path="/setup-account" element={<Register />} />
       <Route path="/get-started" element={<StartApplication />} />
+      <Route path="/resumeJourney" element={<ResumeApplication />} />
     </Routes>
   );
 }
@@ -96,10 +105,12 @@ function Home() {
 
 function App() {
   return (
-    <>
-      <Header />
-      <AppRoutes />
-    </>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <Header />
+        <AppRoutes />
+      </PersistGate>
+    </Provider>
   );
 }
 
