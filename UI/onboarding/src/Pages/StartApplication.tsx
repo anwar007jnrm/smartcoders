@@ -91,7 +91,7 @@ const StartApplication: React.FC = () => {
         email: form.email,
         address: form.address,
         postalcode: form.postalcode,
-        formdata: JSON.stringify(form),
+        formdata: '{}',
         currentpage: 0
       };
       const res = await createApplication(requestData) as ApplicationResponse;

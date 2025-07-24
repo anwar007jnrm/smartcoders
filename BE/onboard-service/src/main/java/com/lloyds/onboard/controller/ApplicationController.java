@@ -6,6 +6,7 @@ import com.lloyds.onboard.model.Constants;
 import com.lloyds.onboard.model.NotificationType;
 import com.lloyds.onboard.service.ApplicationService;
 import com.lloyds.onboard.service.notification.NotificationService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * REST controller for managing Application entities and related workflows.
@@ -92,8 +95,9 @@ public class ApplicationController {
     @PostMapping("/submit-application")
     public ResponseEntity<String> submitApplication(@RequestBody Application app) {
         service.updateApplication(app.getAppid(), app);
-        URI uri = URI.create("/PCAAccounts.html");
-        return ResponseEntity.status(HttpStatus.SEE_OTHER).location(uri).build();
+        URI uri = URI.create("http://localhost:8080/PCAAccounts.html");
+        return ResponseEntity.ok(uri.toString());
+        //return ResponseEntity.status(HttpStatus.SEE_OTHER).location(uri).build();
     }
 
     /**
@@ -104,7 +108,7 @@ public class ApplicationController {
      */
     @GetMapping("/resume-journey")
     public ResponseEntity<ResumeApplication> resumeJourney(@RequestParam(value = "token") String token) throws Exception {
-        return ResponseEntity.ok(service.resumeJourney(token));
+        return ok(service.resumeJourney(token));
     }
 
     /**
